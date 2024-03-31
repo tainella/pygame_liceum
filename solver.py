@@ -1,6 +1,3 @@
-import random
-
-
 class Cell:
     '''Represents a cell within a game of Sudoku.'''
 
