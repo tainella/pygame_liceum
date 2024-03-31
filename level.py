@@ -14,7 +14,3 @@ class Level():
         else:
             self.board = None
 
-    def decrease(self):
-        self.level_number -= 1
-        self.load_next()
-

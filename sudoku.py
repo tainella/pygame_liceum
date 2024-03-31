@@ -228,9 +228,8 @@ def check_sudoku(sudoku):
     return True
 
 
-def play():
+def play(level):
     '''Contains all the functionality for playing a game of Sudoku.'''
-    level = Level()
     game = Sudoku(level.board)
     cells = create_cells()
     active_cell = None
@@ -251,6 +250,14 @@ def play():
                                     height - button_height - buffer + 3,
                                     button_width + 5,
                                     button_height - 5)
+    
+    next_level_btn = ButtonSprite(all_sprites, 'next_level.png', 'next_level_pressed.png', 
+                                    width - buffer - button_border *2 - button_width * 2.5,
+                                    height - button_height - buffer + 3,
+                                    button_height - 5,
+                                    button_height - 5)
+    pygame.font.init()
+    font = pygame.font.SysFont(pygame.font.get_default_font(), 30)
 
     while True:
         for event in pygame.event.get():
@@ -274,6 +281,17 @@ def play():
                     all_sprites.update(event)
                     pygame.display.flip()
                     visual_solve(game, cells)
+
+                if next_level_btn.rect.collidepoint(mouse_pos):
+                    # TODO сохранить результаты по текущему уровню
+                    level.increase()
+                    if level.board:
+                        game = Sudoku(level.board)
+                        cells = create_cells()
+                        active_cell = None
+                    else:
+                        # Конец игры
+                        pass
 
                 # Test if point in any cell
                 active_cell = None
@@ -331,8 +349,11 @@ def play():
         # Update screen
         all_sprites.draw(screen)
         all_sprites.update(event)
+        text_surface = font.render(f"Уровень {level.level_number}", False, (0, 0, 0))
+        screen.blit(text_surface, (20, height - button_height))
         pygame.display.flip()
 
 
 if __name__ == '__main__':
-    play()
+    level = Level()
+    play(level)
