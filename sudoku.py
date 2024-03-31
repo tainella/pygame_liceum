@@ -133,34 +133,6 @@ def fill_cells(cells, board):
             screen.blit(text, textbox)
 
 
-def draw_button(left, top, width, height, border, color, border_color, text):
-    '''Creates a button with a border.'''
-    # Draw the border as outer rect
-    pygame.draw.rect(
-        screen,
-        border_color,
-        (left, top, width+border*2, height+border*2),
-    )
-
-    # Draw the inner button
-    button = pygame.Rect(
-        left+border,
-        top+border,
-        width,
-        height
-    )
-    pygame.draw.rect(screen, color, button)
-
-    # Set the text
-    font = pygame.font.Font(None, 26)
-    text = font.render(text, 1, black)
-    xpos, ypos = button.center
-    textbox = text.get_rect(center=(xpos, ypos))
-    screen.blit(text, textbox)
-
-    return button
-
-
 def draw_board(active_cell, cells, game):
     '''Draws all elements making up the board.'''
     # Draw grid and cells
@@ -290,34 +262,16 @@ def play():
                 mouse_pos = pygame.mouse.get_pos()
 
                 # Reset button is pressed
-                if reset_btn.collidepoint(mouse_pos):
+                if reset_btn_sprite.rect.collidepoint(mouse_pos):
                     game.reset()
 
                 # Solve button is pressed
-                if solve_btn.collidepoint(mouse_pos):
+                if solve_btn_sprite.rect.collidepoint(mouse_pos):
                     screen.fill(white)
                     active_cell = None
                     draw_board(active_cell, cells, game)
-                    reset_btn = draw_button(
-                        width - buffer - button_border*2 - button_width,
-                        height - button_height - button_border*2 - buffer,
-                        button_width,
-                        button_height,
-                        button_border,
-                        inactive_btn,
-                        black,
-                        'Reset'
-                    )
-                    solve_btn = draw_button(
-                        width - buffer*2 - button_border*4 - button_width*2,
-                        height - button_height - button_border*2 - buffer,
-                        button_width,
-                        button_height,
-                        button_border,
-                        inactive_btn,
-                        black,
-                        'Visual Solve'
-                    )
+                    all_sprites.draw(screen)
+                    all_sprites.update(event)
                     pygame.display.flip()
                     visual_solve(game, cells)
 
@@ -364,52 +318,6 @@ def play():
 
         # Draw board
         draw_board(active_cell, cells, game)
-
-        # Create buttons
-        reset_btn = draw_button(
-            width - buffer - button_border*2 - button_width,
-            height - button_height - button_border*2 - buffer,
-            button_width,
-            button_height,
-            button_border,
-            inactive_btn,
-            black,
-            'Reset'
-        )
-        solve_btn = draw_button(
-            width - buffer*2 - button_border*4 - button_width*2,
-            height - button_height - button_border*2 - buffer,
-            button_width,
-            button_height,
-            button_border,
-            inactive_btn,
-            black,
-            'Visual Solve'
-        )
-
-        # Check if mouse over either button
-        if reset_btn.collidepoint(pygame.mouse.get_pos()):
-            reset_btn = draw_button(
-                width - buffer - button_border*2 - button_width,
-                height - button_height - button_border*2 - buffer,
-                button_width,
-                button_height,
-                button_border,
-                active_btn,
-                black,
-                'Reset'
-            )
-        if solve_btn.collidepoint(pygame.mouse.get_pos()):
-            solve_btn = draw_button(
-                width - buffer*2 - button_border*4 - button_width*2,
-                height - button_height - button_border*2 - buffer,
-                button_width,
-                button_height,
-                button_border,
-                active_btn,
-                black,
-                'Visual Solve'
-            )
 
         # Check if game is complete
         if not game.get_empty_cell():
